@@ -3,7 +3,7 @@ use std::str::FromStr;
 
 use super::status::*;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Word {
   data: [char; 5],
 }
