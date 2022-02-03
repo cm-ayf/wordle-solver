@@ -73,8 +73,11 @@ mod test {
   #[test]
   fn filter_2() {
     let mut set = HashSet::full();
-    let word = "hello".parse().unwrap();
-    assert_eq!(set.filter(&word, &"_____".parse().unwrap()), 406);
+    let word1 = "hello".parse().unwrap();
+    let word2 = "rusty".parse().unwrap();
+    assert_eq!(set.filter(&word1, &"_____".parse().unwrap()), 406);
+    assert!(!set.contains(&word1));
+    assert!(set.contains(&word2));
   }
 
   #[test]
