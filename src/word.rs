@@ -1,6 +1,8 @@
 use std::fmt::Display;
 use std::str::FromStr;
 
+use super::status::*;
+
 #[derive(Debug, PartialEq, Eq)]
 pub struct Word {
   data: [char; 5],
@@ -37,6 +39,31 @@ impl Display for Word {
   }
 }
 
+impl Word {
+  pub fn status(&self, answer: &Word) -> Status {
+    let mut data: [Color; 5] = Default::default();
+
+    for i in 0..5 {
+      if self.data[i] == answer.data[i] {
+        data[i] = Color::Green;
+        continue;
+      }
+
+      let count_self = self.data[0..i].iter().filter(|&c| self.data[i].eq(c)).count();
+      let count_answer = answer.data.iter().filter(|&c| self.data[i].eq(c)).count();
+
+      if count_self < count_answer {
+        data[i] = Color::Yellow;
+        continue;
+      }
+
+      data[i] = Color::Gray;
+    }
+
+    Status { data }
+  }
+}
+
 #[cfg(test)]
 mod test {
   use super::*;
@@ -45,6 +72,33 @@ mod test {
     fn new(data: [char; 5]) -> Self {
       Word { data }
     }
+  }
+
+  #[test]
+  fn status_1() {
+    let w = Word::new(['H', 'E', 'L', 'L', 'O']);
+    assert_eq!(w.status(&w), "ggggg".parse().unwrap());
+  }
+
+  #[test]
+  fn status_2() {
+    let w = Word::new(['L', 'A', 'R', 'I', 'O']);
+    let a = Word::new(['H', 'E', 'L', 'L', 'O']);
+    assert_eq!(w.status(&a), "y___g".parse().unwrap());
+  }
+
+  #[test]
+  fn status_3() {
+    let w = Word::new(['T', 'L', 'E', 'L', 'T']);
+    let a = Word::new(['H', 'E', 'L', 'L', 'O']);
+    assert_eq!(w.status(&a), "_yyg_".parse().unwrap());
+  }
+
+  #[test]
+  fn status_4() {
+    let w = Word::new(['L', 'L', 'E', 'R', 'T']);
+    let a = Word::new(['H', 'E', 'L', 'L', 'O']);
+    assert_eq!(w.status(&a), "yyy__".parse().unwrap());
   }
 
   #[test]

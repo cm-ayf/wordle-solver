@@ -8,6 +8,12 @@ pub enum Color {
   Green,
 }
 
+impl Default for Color {
+  fn default() -> Self {
+    Self::Gray
+  }
+}
+
 impl From<&Color> for char {
   fn from(c: &Color) -> Self {
     match c {
@@ -18,7 +24,7 @@ impl From<&Color> for char {
   }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Default)]
 pub struct Status {
   pub data: [Color; 5],
 }
