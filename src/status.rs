@@ -1,7 +1,7 @@
 use std::fmt::Display;
 use std::str::FromStr;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
   Gray,
   Yellow,
@@ -24,7 +24,7 @@ impl From<&Color> for char {
   }
 }
 
-#[derive(Debug, PartialEq, Eq, Default)]
+#[derive(Debug, PartialEq, Eq, Default, Hash)]
 pub struct Status {
   pub data: [Color; 5],
 }

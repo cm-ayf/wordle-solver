@@ -1,12 +1,14 @@
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 use super::*;
 
 pub trait WordSet {
   fn full() -> Self;
-  fn suggest(&self) -> &Word;
   fn filter(&mut self, word: &Word, status: &Status) -> usize;
   fn answer(&self) -> Option<&Word>;
+  fn suggest<'a>(&self, full_set: &'a Self) -> &'a Word;
+  fn matches_less_than(&self, word: &Word, limit: usize) -> Option<usize>;
 }
 
 impl WordSet for HashSet<Word> {
@@ -19,10 +21,6 @@ impl WordSet for HashSet<Word> {
     }
 
     set
-  }
-
-  fn suggest(&self) -> &Word {
-    todo!()
   }
 
   fn filter(&mut self, word: &Word, status: &Status) -> usize {
@@ -45,6 +43,44 @@ impl WordSet for HashSet<Word> {
       1 => self.iter().next(),
       _ => None,
     }
+  }
+
+  fn suggest<'a>(&self, full_set: &'a Self) -> &'a Word {
+    let mut iter = full_set.iter();
+    let mut word = iter.next().unwrap();
+    let mut max = full_set.len();
+
+    loop {
+      match iter.next() {
+        Some(w) => if let Some(u) = self.matches_less_than(w, max) {
+          word = w;
+          max = u;
+        },
+        None => break,
+      }
+    }
+
+    word
+  }
+
+  fn matches_less_than(&self, word: &Word, limit: usize) -> Option<usize> {
+    let mut map: HashMap<Status, usize> = HashMap::new();
+
+    for w in self {
+      let status = w.status(word);
+      if let Some(u) = map.get_mut(&status) {
+        *u += 1;
+        if *u > limit {
+          return None;
+        }
+      } else {
+        map.insert(status, 1);
+      }
+    }
+
+    map
+      .into_values()
+      .reduce(|u1, u2| if u1 < u2 { u2 } else { u1 })
   }
 }
 
