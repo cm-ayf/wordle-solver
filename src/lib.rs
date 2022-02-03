@@ -1,1 +1,2 @@
+mod word;
 mod status;
