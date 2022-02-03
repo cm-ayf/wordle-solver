@@ -2,8 +2,8 @@ use std::collections::HashSet;
 use wordle_solver::WordSet;
 
 fn main() {
-  let full_set = HashSet::full();
-  let mut set = full_set.clone();
+  let available = HashSet::from_file("data/queries");
+  let mut set = HashSet::from_file("data/candidates");
 
   let stdin = std::io::stdin();
 
@@ -13,7 +13,7 @@ fn main() {
       return;
     }
 
-    let word = set.suggest(&full_set);
+    let word = set.suggest(&available);
     println!("{}", word);
     loop {
       let mut buf = String::new();

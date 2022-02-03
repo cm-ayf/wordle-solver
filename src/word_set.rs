@@ -4,16 +4,16 @@ use std::collections::HashSet;
 use super::*;
 
 pub trait WordSet {
-  fn full() -> Self;
+  fn from_file(path: &'static str) -> Self;
   fn filter(&mut self, word: &Word, status: &Status) -> usize;
   fn answer(&self) -> Option<&Word>;
-  fn suggest<'a>(&self, full_set: &'a Self) -> &'a Word;
+  fn suggest<'a>(&self, available: &'a Self) -> &'a Word;
   fn matches_less_than(&self, word: &Word, limit: usize) -> Option<usize>;
 }
 
 impl WordSet for HashSet<Word> {
-  fn full() -> Self {
-    let s = std::fs::read_to_string("data/wordlist").unwrap();
+  fn from_file(path: &'static str) -> Self {
+    let s = std::fs::read_to_string(path).unwrap();
     let mut set = HashSet::new();
 
     for word in s.split(',') {
@@ -45,10 +45,10 @@ impl WordSet for HashSet<Word> {
     }
   }
 
-  fn suggest<'a>(&self, full_set: &'a Self) -> &'a Word {
-    let mut iter = full_set.iter();
+  fn suggest<'a>(&self, available: &'a Self) -> &'a Word {
+    let mut iter = available.iter();
     let mut word = iter.next().unwrap();
-    let mut max = full_set.len();
+    let mut max = available.len();
 
     loop {
       match iter.next() {
@@ -90,13 +90,13 @@ mod test {
 
   #[test]
   fn full() {
-    let set = HashSet::full();
+    let set = HashSet::from_file("data/candidates");
     assert_eq!(set.len(), 2315);
   }
 
   #[test]
   fn filter_1() {
-    let mut set = HashSet::full();
+    let mut set = HashSet::from_file("data/candidates");
     let mut ans = HashSet::new();
     let word = "hello".parse().unwrap();
 
@@ -108,7 +108,7 @@ mod test {
 
   #[test]
   fn filter_2() {
-    let mut set = HashSet::full();
+    let mut set = HashSet::from_file("data/candidates");
     let word1 = "hello".parse().unwrap();
     let word2 = "rusty".parse().unwrap();
     assert_eq!(set.filter(&word1, &"_____".parse().unwrap()), 406);
