@@ -17,7 +17,7 @@ fn main() {
     println!("{}", word);
     loop {
       let mut buf = String::new();
-      match (stdin.read_line(&mut buf), buf[0..5].parse()) {
+      match (stdin.read_line(&mut buf), buf.trim().parse()) {
         (Ok(_), Ok(status)) => {
           set.filter(word, &status);
           break;
