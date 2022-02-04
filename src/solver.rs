@@ -45,9 +45,9 @@ impl Solver {
   ///   * `Y` (`y`): Yellow color (match on other position)
   ///   * `_`: Gray color (no match)
   ///
-  /// * returns:
-  ///   * 0: next word to be queried
-  ///   * 1: if the word is the answer
+  /// * returns next word to be queried
+  ///   * if not finished, the word that can provide good information
+  ///   * if finished, answer
   ///
   /// Panics if this method is called before `start` has been.
   ///
