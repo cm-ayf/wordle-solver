@@ -32,5 +32,5 @@ mod word_set;
 
 pub use solver::Solver;
 use status::Status;
-use word::Word;
-use word_set::WordSet;
+pub use word::Word;
+pub use word_set::WordSet;

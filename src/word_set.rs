@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use super::*;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct WordSet {
   data: Vec<Word>,
 }

@@ -5,6 +5,7 @@ use super::*;
 
 /// class that holds all states to solve.
 #[wasm_bindgen]
+#[derive(Clone)]
 pub struct Solver {
   available: WordSet,
   set: WordSet,
