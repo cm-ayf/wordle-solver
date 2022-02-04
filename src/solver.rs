@@ -1,6 +1,8 @@
+use wasm_bindgen::prelude::*;
 use super::*;
 
 /// class that holds all states to solve.
+#[wasm_bindgen]
 pub struct Solver {
   available: WordSet,
   set: WordSet,
@@ -8,8 +10,10 @@ pub struct Solver {
   answer: Option<Word>,
 }
 
+#[wasm_bindgen]
 impl Solver {
   /// create new instance.
+  #[wasm_bindgen(constructor)]
   pub fn new() -> Self {
     let available = WordSet::from_file("data/queries");
     let set = WordSet::from_file("data/candidates");
