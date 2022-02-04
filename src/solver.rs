@@ -56,7 +56,10 @@ impl Solver {
   /// might take time up to 0.10 second.
   pub fn next(&mut self, status: &str) -> Result<String, String> {
     let word = self.queries.last().expect("call start before next");
-    self.set.filter(word, &status.parse()?);
+
+    if self.set.filter(word, &status.parse()?) == 0 {
+      return Err("no words left".to_string());
+    };
 
     if let Some(answer) = self.set.answer() {
       self.answer = Some(answer.clone());
