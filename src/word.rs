@@ -42,30 +42,30 @@ impl Display for Word {
 impl Word {
   pub fn status(&self, answer: &Word) -> Status {
     let mut answer = answer.clone();
-    let mut data: [Color; 5] = Default::default();
+    let mut data = Default::default();
 
     for i in 0..5 {
       if self.data[i] == answer.data[i] {
-        data[i] = Color::Green;
+        data |= 2 << 2*i;
         answer.data[i] = '_';
       }
     }
 
     for i in 0..5 {
-      if data[i] == Color::Green {
+      if data >> 2*i & 3 == 2 {
         continue;
       }
 
       for j in 0..5 {
         if self.data[i] == answer.data[j] {
-          data[i] = Color::Yellow;
+          data |= 1 << 2*i;
           answer.data[j] = '_';
           break;
         }
       }
     }
 
-    Status { data }
+    Status::new(data)
   }
 }
 

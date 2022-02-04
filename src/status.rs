@@ -1,32 +1,15 @@
 use std::fmt::Display;
 use std::str::FromStr;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Color {
-  Gray,
-  Yellow,
-  Green,
-}
-
-impl Default for Color {
-  fn default() -> Self {
-    Self::Gray
-  }
-}
-
-impl From<&Color> for char {
-  fn from(c: &Color) -> Self {
-    match c {
-      &Color::Gray => '_',
-      &Color::Yellow => 'y',
-      &Color::Green => 'g',
-    }
-  }
-}
-
 #[derive(Debug, PartialEq, Eq, Default, Hash)]
 pub struct Status {
-  pub data: [Color; 5],
+  data: u16,
+}
+
+impl Status {
+  pub fn new(data: u16) -> Self {
+    Status { data }
+  }
 }
 
 impl FromStr for Status {
@@ -34,13 +17,13 @@ impl FromStr for Status {
 
   fn from_str(s: &str) -> Result<Self, Self::Err> {
     let mut chars = s.chars();
-    let mut data: [Color; 5] = [Color::Green; 5];
+    let mut data = 0;
 
     for i in 0..5 {
-      data[i] = match chars.next().ok_or("not enough chars")? {
-        'g' | 'G' => Color::Green,
-        'y' | 'Y' => Color::Yellow,
-        '_' => Color::Gray,
+      match chars.next().ok_or("not enough chars")? {
+        'g' | 'G' => data |= 2 << (2*i),
+        'y' | 'Y' => data |= 1 << (2*i),
+        '_' => {},
         _ => return Err(format!("{i}th char is not a status char")),
       };
     }
@@ -56,7 +39,14 @@ impl FromStr for Status {
 impl Display for Status {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     let mut s = String::new();
-    self.data.iter().for_each(|c| s.push(c.into()));
+    for i in 0..5 {
+      match (self.data >> 2*i) & 3 {
+        2 | 3 => s.push('g'),
+        1 => s.push('y'),
+        0 => s.push('_'),
+        _ => panic!(),
+      }
+    }
     write!(f, "{}", s)
   }
 }
@@ -67,14 +57,8 @@ mod test {
 
   #[test]
   fn parse_success() {
-    let s: Status = "gy_GY".parse().unwrap();
-    assert_eq!(s, Status { data: [
-      Color::Green,
-      Color::Yellow,
-      Color::Gray,
-      Color::Green,
-      Color::Yellow,
-    ] });
+    let s: Status = "gy__g".parse().unwrap();
+    assert_eq!(s, Status { data: 0b1000000110 });
   }
 
   #[test]
@@ -94,14 +78,7 @@ mod test {
 
   #[test]
   fn test_format() {
-    let s = Status { data: [
-      Color::Green,
-      Color::Yellow,
-      Color::Gray,
-      Color::Green,
-      Color::Yellow,
-    ] };
-
-    assert_eq!(format!("{s}"), "gy_gy".to_string());
+    let s = Status { data: 0b1000000110 };
+    assert_eq!(s.to_string(), "gy__g".to_string());
   }
 }
