@@ -1,38 +1,25 @@
-use std::time::Instant;
+use std::error::Error;
 
-use wordle_solver::WordSet;
+use wordle_solver::Solver;
 
 fn main() {
-  let available = WordSet::from_file("data/queries");
-  let mut set = WordSet::from_file("data/candidates");
-
   let stdin = std::io::stdin();
+  let mut solver = Solver::new();
+  let mut i = 0;
 
-  for _ in 0..5 {
-    if let Some(word) = set.answer() {
-      println!("{}", word);
-      return;
-    }
+  println!("{}", solver.start());
 
-    let start = Instant::now();
-    let word = set.suggest(&available);
-    println!("{}", start.elapsed().as_millis());
-
-    println!("{}", word);
-    loop {
+  while i < 6 {
+    match (|| {
       let mut buf = String::new();
-      match (stdin.read_line(&mut buf), buf.trim().parse()) {
-        (Ok(_), Ok(status)) => {
-          set.filter(word, &status);
-          break;
-        },
-        _ => eprintln!("error try again"),
-      }
+      stdin.read_line(&mut buf)?;
+      Result::<_, Box<dyn Error>>::Ok(solver.next(buf.trim())?)
+    })() {
+      Ok((w, ended)) => {
+        println!("{w}");
+        if ended { return; } else { i += 1; }
+      },
+      Err(e) => eprintln!("{e}")
     }
   }
-
-  match set.answer() {
-    Some(word) => println!("{}", word),
-    None => eprintln!("failed"),
-  };
 }
