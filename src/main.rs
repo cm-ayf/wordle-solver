@@ -16,9 +16,13 @@ fn main() {
       let next = solver.next(buf.trim())?;
       Result::<_, Box<dyn Error>>::Ok(next)
     })() {
-      Ok((w, ended)) => {
+      Ok(w) => {
         println!("{w}");
-        if ended { return; } else { i += 1; }
+        if solver.finished() {
+          return;
+        } else {
+          i += 1;
+        }
       },
       Err(e) => eprintln!("{e}")
     }

@@ -5,6 +5,7 @@ pub struct Solver {
   available: WordSet,
   set: WordSet,
   queries: Vec<Word>,
+  answer: Option<Word>,
 }
 
 impl Solver {
@@ -17,6 +18,7 @@ impl Solver {
       available,
       set,
       queries: Vec::new(),
+      answer: None,
     }
   }
 
@@ -48,17 +50,28 @@ impl Solver {
   /// Errors if `status` was invalid.
   /// 
   /// might take time up to 0.10 second.
-  pub fn next(&mut self, status: &str) -> Result<(String, bool), String> {
+  pub fn next(&mut self, status: &str) -> Result<String, String> {
     let word = self.queries.last().expect("call start before next");
     self.set.filter(word, &status.parse()?);
 
     if let Some(answer) = self.set.answer() {
-      return Ok((answer.to_string(), true));
+      self.answer = Some(answer.clone());
+      return Ok(answer.to_string());
     }
 
     let query = self.set.suggest(&self.available);
     self.queries.push(query.clone());
 
-    Ok((query.to_string(), false))
+    Ok(query.to_string())
+  }
+
+  /// returns if solver has answer.
+  pub fn finished(&self) -> bool {
+    self.answer.is_some()
+  }
+
+  /// returns answer if solver has it.
+  pub fn answer(&self) -> Option<String> {
+    self.answer.as_ref().map(|w| w.to_string())
   }
 }
