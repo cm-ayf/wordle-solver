@@ -1,9 +1,8 @@
-use std::collections::HashSet;
 use wordle_solver::WordSet;
 
 fn main() {
-  let available = HashSet::from_file("data/queries");
-  let mut set = HashSet::from_file("data/candidates");
+  let available = WordSet::from_file("data/queries");
+  let mut set = WordSet::from_file("data/candidates");
 
   let stdin = std::io::stdin();
 
