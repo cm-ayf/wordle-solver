@@ -4,7 +4,7 @@ use wordle_solver::Solver;
 
 fn main() {
   let stdin = std::io::stdin();
-  let mut solver = Solver::new();
+  let mut solver = Solver::new(true);
   let mut i = 0;
 
   println!("{}", solver.start());

@@ -18,7 +18,7 @@ impl WordSet {
   }
 
   pub fn queries() -> Self {
-    Self::from_vec(wordle_solver_data::queries())
+    Self::from_vec([wordle_solver_data::queries(), wordle_solver_data::candidates()].concat())
   }
 
   pub fn filter(&mut self, word: &Word, status: &Status) -> usize {

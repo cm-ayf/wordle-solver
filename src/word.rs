@@ -114,6 +114,13 @@ mod test {
   }
 
   #[test]
+  fn status_6() {
+    let w = Word::new(['B', 'U', 'M', 'P', 'H']);
+    let a = Word::new(['H', 'U', 'M', 'P', 'H']);
+    assert_eq!(w.status(&a), "_gggg".parse().unwrap());
+  }
+
+  #[test]
   fn parse_success() {
     let s: Word = "HELLO".parse().unwrap();
     assert_eq!(s, Word::new(['H', 'E', 'L', 'L', 'O']));
