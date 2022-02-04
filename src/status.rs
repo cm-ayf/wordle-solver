@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fmt::Display;
 use std::str::FromStr;
 
@@ -12,24 +13,45 @@ impl Status {
   }
 }
 
+#[derive(Debug, PartialEq, Eq)]
+pub enum ParseStatusError {
+  NotEnoughChars,
+  TooMuchChars,
+  NotStatusChar(usize)
+}
+
+use ParseStatusError::*;
+
+impl Display for ParseStatusError {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    match self {
+      NotEnoughChars => write!(f, "not enough chars"),
+      TooMuchChars => write!(f, "too much chars"),
+      NotStatusChar(i) => write!(f, "{i}th char is not a status char"),
+    }
+  }
+}
+
+impl Error for ParseStatusError {}
+
 impl FromStr for Status {
-  type Err = String;
+  type Err = ParseStatusError;
 
   fn from_str(s: &str) -> Result<Self, Self::Err> {
     let mut chars = s.chars();
     let mut data = 0;
 
     for i in 0..5 {
-      match chars.next().ok_or("not enough chars")? {
+      match chars.next().ok_or(NotEnoughChars)? {
         'g' | 'G' => data |= 2 << (2 * i),
         'y' | 'Y' => data |= 1 << (2 * i),
         '_' | ' ' => {}
-        _ => return Err(format!("{i}th char is not a status char")),
+        _ => return Err(NotStatusChar(i)),
       };
     }
 
     if let Some(_) = chars.next() {
-      return Err("too much chars".into());
+      return Err(TooMuchChars);
     }
 
     Ok(Self { data })
@@ -65,18 +87,18 @@ mod test {
   fn parse_invalid_char() {
     assert_eq!(
       "hello".parse::<Status>(),
-      Err("0th char is not a status char".into())
+      Err(NotStatusChar(0))
     );
   }
 
   #[test]
   fn parse_short() {
-    assert_eq!("gygy".parse::<Status>(), Err("not enough chars".into()));
+    assert_eq!("gygy".parse::<Status>(), Err(NotEnoughChars));
   }
 
   #[test]
   fn parse_long() {
-    assert_eq!("ggggyyyy".parse::<Status>(), Err("too much chars".into()));
+    assert_eq!("ggggyyyy".parse::<Status>(), Err(TooMuchChars));
   }
 
   #[test]

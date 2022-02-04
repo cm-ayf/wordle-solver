@@ -1,5 +1,7 @@
-use super::*;
+use std::error::Error;
+use std::fmt::Display;
 use wasm_bindgen::prelude::*;
+use super::*;
 
 /// class that holds all states to solve.
 #[wasm_bindgen]
@@ -8,6 +10,44 @@ pub struct Solver {
   set: WordSet,
   queries: Vec<Word>,
   answer: Option<Word>,
+}
+
+#[derive(Debug)]
+pub enum SolverError {
+  ParseStatusError(status::ParseStatusError),
+  NoWordsLeft,
+}
+
+use SolverError::*;
+
+impl From<status::ParseStatusError> for SolverError {
+  fn from(e: status::ParseStatusError) -> Self {
+    ParseStatusError(e)
+  }
+}
+
+impl Display for SolverError {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    match self {
+      ParseStatusError(e) => write!(f, "{e}"),
+      NoWordsLeft => write!(f, "no words left"),
+    }
+  }
+}
+
+impl Error for SolverError {
+  fn source(&self) -> Option<&(dyn Error + 'static)> {
+    match self {
+      ParseStatusError(e) => Some(e),
+      NoWordsLeft => None,
+    }
+  }
+}
+
+impl Into<JsValue> for SolverError {
+  fn into(self) -> JsValue {
+    JsValue::from_str(&self.to_string())
+  }
 }
 
 #[wasm_bindgen]
@@ -43,7 +83,7 @@ impl Solver {
   /// * `status` should be text of 5 characters chosen from:
   ///   * `G` (`g`): Green color (match on exact position)
   ///   * `Y` (`y`): Yellow color (match on other position)
-  ///   * `_`: Gray color (no match)
+  ///   * `_` (` `): Gray color (no match)
   ///
   /// * returns next word to be queried
   ///   * if not finished, the word that can provide good information
@@ -54,11 +94,11 @@ impl Solver {
   /// Errors if `status` was invalid.
   ///
   /// might take time up to 0.10 second.
-  pub fn next(&mut self, status: &str) -> Result<String, String> {
+  pub fn next(&mut self, status: &str) -> Result<String, SolverError> {
     let word = self.queries.last().expect("call start before next");
 
     if self.set.filter(word, &status.parse()?) == 0 {
-      return Err("no words left".to_string());
+      return Err(NoWordsLeft);
     };
 
     if let Some(answer) = self.set.answer() {
