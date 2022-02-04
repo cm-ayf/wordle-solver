@@ -8,15 +8,17 @@ pub struct WordSet {
 }
 
 impl WordSet {
-  pub fn from_file(path: &'static str) -> Self {
-    let s = std::fs::read_to_string(path).unwrap();
-    let mut data = Vec::new();
-
-    for word in s.split(',') {
-      data.push(word.parse().unwrap());
-    }
-
+  fn from_vec(vec: Vec<&'static str>) -> Self {
+    let data = vec.iter().map(|str| str.parse().unwrap()).collect();
     Self { data }
+  }
+
+  pub fn candidates() -> Self {
+    Self::from_vec(data::candidates())
+  }
+
+  pub fn queries() -> Self {
+    Self::from_vec(data::queries())
   }
 
   pub fn filter(&mut self, word: &Word, status: &Status) -> usize {
@@ -96,13 +98,13 @@ mod test {
 
   #[test]
   fn full() {
-    let set = WordSet::from_file("data/candidates");
+    let set = WordSet::candidates();
     assert_eq!(set.data.len(), 2315);
   }
 
   #[test]
   fn filter_1() {
-    let mut set = WordSet::from_file("data/candidates");
+    let mut set = WordSet::candidates();
     let mut ans = Vec::new();
     let word = "hello".parse().unwrap();
 
@@ -116,7 +118,7 @@ mod test {
 
   #[test]
   fn filter_2() {
-    let mut set = WordSet::from_file("data/candidates");
+    let mut set = WordSet::candidates();
     let word1 = "hello".parse().unwrap();
     let word2 = "rusty".parse().unwrap();
     assert_eq!(set.filter(&word1, &"_____".parse().unwrap()), 406);

@@ -15,8 +15,8 @@ impl Solver {
   /// create new instance.
   #[wasm_bindgen(constructor)]
   pub fn new() -> Self {
-    let available = WordSet::from_file("data/queries");
-    let set = WordSet::from_file("data/candidates");
+    let available = WordSet::queries();
+    let set = WordSet::candidates();
 
     Self {
       available,

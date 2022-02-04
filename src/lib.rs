@@ -6,7 +6,7 @@
 //!
 //! ```
 //! let mut solver = Solver::new();
-//! 
+//!
 //! assert!(!solver.finished());
 //! assert_eq!(solver.answer(), None);
 //!
@@ -20,11 +20,12 @@
 //! assert_eq!(&word, "ZYMIC");
 //! let word = solver.next("_____")?;
 //! assert_eq!(&word, "REBUT");
-//! 
+//!
 //! assert!(solver.finished());
 //! assert_eq!(solver.answer(), Some("REBUT".to_string()));
 //! ```
 
+mod data;
 mod solver;
 mod status;
 mod word;
