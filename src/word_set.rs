@@ -1,20 +1,19 @@
 use std::collections::HashMap;
-use std::collections::HashSet;
 
 use super::*;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct WordSet {
-  data: HashSet<Word>,
+  data: Vec<Word>,
 }
 
 impl WordSet {
   pub fn from_file(path: &'static str) -> Self {
     let s = std::fs::read_to_string(path).unwrap();
-    let mut data = HashSet::new();
+    let mut data = Vec::new();
 
     for word in s.split(',') {
-      data.insert(word.parse().unwrap());
+      data.push(word.parse().unwrap());
     }
 
     Self { data }
@@ -22,14 +21,16 @@ impl WordSet {
 
   pub fn filter(&mut self, word: &Word, status: &Status) -> usize {
     let mut to_be_removed = Vec::new();
-    for w in self.data.iter() {
+    for (u, w) in self.data.iter().enumerate() {
       if &word.status(&w) != status {
-        to_be_removed.push(w.clone());
+        to_be_removed.push(u);
       }
     }
 
-    for w in to_be_removed {
-      self.data.remove(&w);
+    to_be_removed.reverse();
+
+    for u in to_be_removed {
+      self.data.remove(u);
     }
 
     self.data.len()
@@ -88,7 +89,7 @@ mod test {
   impl WordSet {
     fn new() -> Self {
       Self {
-        data: HashSet::new(),
+        data: Vec::new(),
       }
     }
   }
@@ -102,11 +103,11 @@ mod test {
   #[test]
   fn filter_1() {
     let mut set = WordSet::from_file("data/candidates");
-    let mut ans = HashSet::new();
+    let mut ans = Vec::new();
     let word = "hello".parse().unwrap();
 
     assert_eq!(set.filter(&word, &"ggggg".parse().unwrap()), 1);
-    ans.insert(word);
+    ans.push(word);
 
     let ans = WordSet { data: ans };
 
@@ -133,7 +134,7 @@ mod test {
   fn answer_2() {
     let mut set = WordSet::new();
     let word: Word = "hello".parse().unwrap();
-    set.data.insert(word.clone());
+    set.data.push(word.clone());
     assert_eq!(set.answer(), Some(&word));
   }
 
@@ -142,8 +143,8 @@ mod test {
     let mut set = WordSet::new();
     let word1: Word = "hello".parse().unwrap();
     let word2: Word = "world".parse().unwrap();
-    set.data.insert(word1);
-    set.data.insert(word2);
+    set.data.push(word1);
+    set.data.push(word2);
     assert_eq!(set.answer(), None);
   }
 }
