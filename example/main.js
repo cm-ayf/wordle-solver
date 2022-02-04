@@ -1,7 +1,7 @@
 const { createInterface } = require('readline');
 const { Solver } = require('../pkg/wordle_solver'); // '@cm-ayf/wordle-solver'
 
-const solver = new Solver();
+const solver = new Solver(true);
 const reader = createInterface({
   input: process.stdin,
 });

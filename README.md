@@ -98,6 +98,8 @@ console.log(solver.answer()); // REBUT
 
 ### struct (class) `Solver`
 
+* `Solver::new (constructor)`
+  * `strict`: set true to use in hard mode.
 * `Solver(.prototype).start`
   * start solving.
   * returns first query.
