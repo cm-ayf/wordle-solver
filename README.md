@@ -30,7 +30,24 @@ npm i @cm-ayf/wordle-solver
 
 ## usage
 
-* Rust
+### Rust
+
+* CLI
+
+```sh
+$ cargo run --release # significantly faster with --release
+AIERY
+__YY_ # input
+WEROS
+_GY__ # input
+TURFY
+YYY__ # input
+ZYMIC
+_____ # input
+REBUT
+```
+
+* library crate
 
 ```rs
 let mut solver = Solver::new();
@@ -52,7 +69,7 @@ assert!(solver.finished());
 assert_eq!(solver.answer(), Some("REBUT".to_string()));
 ```
 
-* TypeScript / JavaScript
+### TypeScript / JavaScript
 
 ```ts
 import { Solver } from 'wordle-solver';
