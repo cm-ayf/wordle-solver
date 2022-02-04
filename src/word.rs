@@ -41,23 +41,28 @@ impl Display for Word {
 
 impl Word {
   pub fn status(&self, answer: &Word) -> Status {
+    let mut answer = answer.clone();
     let mut data: [Color; 5] = Default::default();
 
     for i in 0..5 {
       if self.data[i] == answer.data[i] {
         data[i] = Color::Green;
+        answer.data[i] = '_';
+      }
+    }
+
+    for i in 0..5 {
+      if data[i] == Color::Green {
         continue;
       }
 
-      let count_self = self.data[0..i].iter().filter(|&c| self.data[i].eq(c)).count();
-      let count_answer = answer.data.iter().filter(|&c| self.data[i].eq(c)).count();
-
-      if count_self < count_answer {
-        data[i] = Color::Yellow;
-        continue;
+      for j in 0..5 {
+        if self.data[i] == answer.data[j] {
+          data[i] = Color::Yellow;
+          answer.data[j] = '_';
+          break;
+        }
       }
-
-      data[i] = Color::Gray;
     }
 
     Status { data }
@@ -99,6 +104,13 @@ mod test {
     let w = Word::new(['L', 'L', 'E', 'R', 'T']);
     let a = Word::new(['H', 'E', 'L', 'L', 'O']);
     assert_eq!(w.status(&a), "yyy__".parse().unwrap());
+  }
+
+  #[test]
+  fn status_5() {
+    let w = Word::new(['L', 'L', 'L', 'L', 'L']);
+    let a = Word::new(['H', 'E', 'L', 'L', 'O']);
+    assert_eq!(w.status(&a), "__gg_".parse().unwrap());
   }
 
   #[test]

@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use wordle_solver::WordSet;
 
 fn main() {
@@ -12,7 +14,10 @@ fn main() {
       return;
     }
 
+    let start = Instant::now();
     let word = set.suggest(&available);
+    println!("{}", start.elapsed().as_millis());
+
     println!("{}", word);
     loop {
       let mut buf = String::new();
