@@ -1,12 +1,12 @@
 //! # wordle-solver
-//! 
+//!
 //! [wordle](https://www.powerlanguage.co.uk/wordle/) solver API.
-//! 
+//!
 //! ## usage
-//! 
+//!
 //! ```
 //! let mut solver = Solver::new();
-//! 
+//!
 //! let word = solver.start()
 //! println!("{}", word); //AIERY
 //! let word = solver.next("__YY_")?;
@@ -20,12 +20,12 @@
 //! assert!(solver.finished());
 //! ```
 
-mod word;
-mod status;
-mod word_set;
 mod solver;
+mod status;
+mod word;
+mod word_set;
 
-use word::Word;
-use status::Status;
-use word_set::WordSet;
 pub use solver::Solver;
+use status::Status;
+use word::Word;
+use word_set::WordSet;

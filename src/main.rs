@@ -23,8 +23,8 @@ fn main() {
         } else {
           i += 1;
         }
-      },
-      Err(e) => eprintln!("{e}")
+      }
+      Err(e) => eprintln!("{e}"),
     }
   }
 }

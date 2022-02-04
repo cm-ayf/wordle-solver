@@ -28,7 +28,7 @@ impl FromStr for Word {
       return Err(format!("too much chars"));
     }
 
-    Ok(Self{ data })
+    Ok(Self { data })
   }
 }
 
@@ -46,19 +46,19 @@ impl Word {
 
     for i in 0..5 {
       if self.data[i] == answer.data[i] {
-        data |= 2 << 2*i;
+        data |= 2 << 2 * i;
         answer.data[i] = '_';
       }
     }
 
     for i in 0..5 {
-      if data >> 2*i & 3 == 2 {
+      if data >> 2 * i & 3 == 2 {
         continue;
       }
 
       for j in 0..5 {
         if self.data[i] == answer.data[j] {
-          data |= 1 << 2*i;
+          data |= 1 << 2 * i;
           answer.data[j] = '_';
           break;
         }
@@ -127,7 +127,10 @@ mod test {
 
   #[test]
   fn parse_invalid_char() {
-    assert_eq!("_____".parse::<Word>(), Err("0th char is not an alphabet".into()));
+    assert_eq!(
+      "_____".parse::<Word>(),
+      Err("0th char is not an alphabet".into())
+    );
   }
 
   #[test]

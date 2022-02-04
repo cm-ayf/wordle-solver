@@ -21,9 +21,9 @@ impl FromStr for Status {
 
     for i in 0..5 {
       match chars.next().ok_or("not enough chars")? {
-        'g' | 'G' => data |= 2 << (2*i),
-        'y' | 'Y' => data |= 1 << (2*i),
-        '_' => {},
+        'g' | 'G' => data |= 2 << (2 * i),
+        'y' | 'Y' => data |= 1 << (2 * i),
+        '_' => {}
         _ => return Err(format!("{i}th char is not a status char")),
       };
     }
@@ -32,7 +32,7 @@ impl FromStr for Status {
       return Err("too much chars".into());
     }
 
-    Ok(Self{ data })
+    Ok(Self { data })
   }
 }
 
@@ -40,7 +40,7 @@ impl Display for Status {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     let mut s = String::new();
     for i in 0..5 {
-      match (self.data >> 2*i) & 3 {
+      match (self.data >> 2 * i) & 3 {
         2 | 3 => s.push('g'),
         1 => s.push('y'),
         0 => s.push('_'),
@@ -63,7 +63,10 @@ mod test {
 
   #[test]
   fn parse_invalid_char() {
-    assert_eq!("hello".parse::<Status>(), Err("0th char is not a status char".into()));
+    assert_eq!(
+      "hello".parse::<Status>(),
+      Err("0th char is not a status char".into())
+    );
   }
 
   #[test]

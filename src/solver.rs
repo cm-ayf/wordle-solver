@@ -1,5 +1,5 @@
-use wasm_bindgen::prelude::*;
 use super::*;
+use wasm_bindgen::prelude::*;
 
 /// class that holds all states to solve.
 #[wasm_bindgen]
@@ -27,9 +27,9 @@ impl Solver {
   }
 
   /// start solving.
-  /// 
+  ///
   /// returns first query.
-  /// 
+  ///
   /// might take time up to 1.0 second.
   pub fn start(&mut self) -> String {
     let query = self.set.suggest(&self.available);
@@ -44,15 +44,15 @@ impl Solver {
   ///   * `G` (`g`): Green color (match on exact position)
   ///   * `Y` (`y`): Yellow color (match on other position)
   ///   * `_`: Gray color (no match)
-  /// 
+  ///
   /// * returns:
   ///   * 0: next word to be queried
   ///   * 1: if the word is the answer
-  /// 
+  ///
   /// Panics if this method is called before `start` has been.
-  /// 
+  ///
   /// Errors if `status` was invalid.
-  /// 
+  ///
   /// might take time up to 0.10 second.
   pub fn next(&mut self, status: &str) -> Result<String, String> {
     let word = self.queries.last().expect("call start before next");

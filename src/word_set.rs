@@ -50,10 +50,12 @@ impl WordSet {
 
     loop {
       match iter.next() {
-        Some(w) => if let Some(u) = self.matches_less_than(w, max) {
-          word = w;
-          max = u;
-        },
+        Some(w) => {
+          if let Some(u) = self.matches_less_than(w, max) {
+            word = w;
+            max = u;
+          }
+        }
         None => break,
       }
     }
@@ -88,9 +90,7 @@ mod test {
 
   impl WordSet {
     fn new() -> Self {
-      Self {
-        data: Vec::new(),
-      }
+      Self { data: Vec::new() }
     }
   }
 
