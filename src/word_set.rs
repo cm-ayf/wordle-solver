@@ -14,11 +14,11 @@ impl WordSet {
   }
 
   pub fn candidates() -> Self {
-    Self::from_vec(data::candidates())
+    Self::from_vec(wordle_solver_data::candidates())
   }
 
   pub fn queries() -> Self {
-    Self::from_vec(data::queries())
+    Self::from_vec(wordle_solver_data::queries())
   }
 
   pub fn filter(&mut self, word: &Word, status: &Status) -> usize {

@@ -25,7 +25,6 @@
 //! assert_eq!(solver.answer(), Some("REBUT".to_string()));
 //! ```
 
-mod data;
 mod solver;
 mod status;
 mod word;
