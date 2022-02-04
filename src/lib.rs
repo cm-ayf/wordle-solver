@@ -6,18 +6,23 @@
 //!
 //! ```
 //! let mut solver = Solver::new();
+//! 
+//! assert!(!solver.finished());
+//! assert_eq!(solver.answer(), None);
 //!
-//! let word = solver.start()
-//! println!("{}", word); //AIERY
+//! let word = solver.start();
+//! assert_eq!(&word, "AIERY");
 //! let word = solver.next("__YY_")?;
-//! println!("{}", word); //WEROS
+//! assert_eq!(&word, "WEROS");
 //! let word = solver.next("_GY__")?;
-//! println!("{}", word); //TURFY
+//! assert_eq!(&word, "TURFY");
 //! let word = solver.next("YYY__")?;
-//! println!("{}", word); //ZYMIC
+//! assert_eq!(&word, "ZYMIC");
 //! let word = solver.next("_____")?;
-//! println!("{}", word); //REBUT
+//! assert_eq!(&word, "REBUT");
+//! 
 //! assert!(solver.finished());
+//! assert_eq!(solver.answer(), Some("REBUT".to_string()));
 //! ```
 
 mod solver;
