@@ -9,11 +9,12 @@ fn main() {
 
   println!("{}", solver.start());
 
-  while i < 6 {
+  while i < 5 {
     match (|| {
       let mut buf = String::new();
       stdin.read_line(&mut buf)?;
-      Result::<_, Box<dyn Error>>::Ok(solver.next(buf.trim())?)
+      let next = solver.next(buf.trim())?;
+      Result::<_, Box<dyn Error>>::Ok(next)
     })() {
       Ok((w, ended)) => {
         println!("{w}");

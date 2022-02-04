@@ -26,12 +26,11 @@ impl Solver {
   }
 
   pub fn next(&mut self, status: &str) -> Result<(String, bool), String> {
-    if let Some(word) = self.queries.last() {
-      self.set.filter(word, &status.parse()?);
+    let word = self.queries.last().expect("call start before next");
+    self.set.filter(word, &status.parse()?);
 
-      if let Some(answer) = self.set.answer() {
-        return Ok((answer.to_string(), true));
-      }
+    if let Some(answer) = self.set.answer() {
+      return Ok((answer.to_string(), true));
     }
 
     let query = self.set.suggest(&self.available);
