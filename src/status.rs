@@ -23,7 +23,7 @@ impl FromStr for Status {
       match chars.next().ok_or("not enough chars")? {
         'g' | 'G' => data |= 2 << (2 * i),
         'y' | 'Y' => data |= 1 << (2 * i),
-        '_' => {}
+        '_' | ' ' => {}
         _ => return Err(format!("{i}th char is not a status char")),
       };
     }
@@ -57,7 +57,7 @@ mod test {
 
   #[test]
   fn parse_success() {
-    let s: Status = "gy__g".parse().unwrap();
+    let s: Status = "gy_ G".parse().unwrap();
     assert_eq!(s, Status { data: 0b1000000110 });
   }
 
